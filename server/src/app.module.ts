@@ -5,10 +5,16 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { UrlModule } from './url/url.module';
 import config from './config/config';
+import { CacheModule } from '@nestjs/cache-manager';
+
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal:true
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
@@ -29,7 +35,8 @@ import config from './config/config';
       }),
       inject: [ConfigService],
     }),
-    AuthModule
+    AuthModule,
+    UrlModule
   ],
   controllers: [AppController],
   providers: [AppService],
