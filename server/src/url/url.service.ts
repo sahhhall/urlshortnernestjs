@@ -1,18 +1,13 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Url } from './schemas/url.schema';
-import { Model } from 'mongoose';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { CreateUrlDTO } from './dto/create.dto';
 import ShortUniqueId from 'short-unique-id';
 import { RedisCacheService } from 'src/redis/redis-cache.service';
+import { IUrlRepository } from './interfaces/url.repository.interface';
 
 @Injectable()
 export class UrlService {
     private uid: ShortUniqueId;
-    constructor(@InjectModel(Url.name) private urlModel: Model<Url>,
-        @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    constructor(@Inject('IUrlRepository') private readonly urlRepository: IUrlRepository,
         private readonly redisCacheService: RedisCacheService
     ) {
         this.uid = new ShortUniqueId({ length: 6 })
@@ -24,7 +19,7 @@ export class UrlService {
 
         await this.redisCacheService.setCache(shortId, url);
 
-        await this.urlModel.create({
+        await this.urlRepository.create({
             shortId,
             url,
             userId,
@@ -44,11 +39,11 @@ export class UrlService {
         console.log(cachedUrl,);
 
         if (cachedUrl) {
-            await this.urlModel.updateOne({ shortId }, { $inc: { clicks: 1 } })
-            return cachedUrl
-        } else {
-            throw new NotFoundException('URL not found');
+            await this.urlRepository.incrementClicks(shortId);
+            return cachedUrl;
         }
+
+        throw new NotFoundException('URL not found');
     }
 
     private async generateUniqueShortId(): Promise<string> {
@@ -57,7 +52,7 @@ export class UrlService {
 
         do {
             shortId = this.uid.randomUUID();
-            existInRedis = await this.cacheManager.get(shortId)
+            existInRedis = await this.redisCacheService.getCache(shortId)
         } while (existInRedis);
 
         return shortId;

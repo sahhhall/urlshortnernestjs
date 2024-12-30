@@ -1,15 +1,14 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SignupDTO } from './dtos/signup.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { SigninDTO } from './dtos/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { IUserRepositary } from './interfaces/user.repository.interface';
 @Injectable()
 export class AuthService {
-    constructor(@InjectModel(User.name) private UserModal: Model<User>,
+    constructor(
+        @Inject('IUserRepository') private readonly userRepositary: IUserRepositary,
         private jwtService: JwtService) {
 
     }
@@ -17,7 +16,7 @@ export class AuthService {
 
         const { email, name, password } = signupData;
         //  if email exists
-        const existEmail = await this.UserModal.findOne({ email });
+        const existEmail = await this.userRepositary.findByEmail(email);
         if (existEmail) {
             throw new BadRequestException('Email already in use');
         }
@@ -26,7 +25,7 @@ export class AuthService {
         const hashPassword = await bcrypt.hash(password, 10);
 
         //  savee db
-        const user = await this.UserModal.create({
+        const user = await this.userRepositary.create({
             name,
             email,
             password: hashPassword,
@@ -40,7 +39,7 @@ export class AuthService {
         });
 
         this.setCookie(res, token);
-
+        console.log("user is this",user,)
 
         return {
             message: "register successfull",
@@ -57,7 +56,7 @@ export class AuthService {
         const { email, password } = credentials;
 
         // check  if user exists
-        const user = await this.UserModal.findOne({ email });
+        const user = await this.userRepositary.findByEmail(email);
         if (!user) {
             throw new UnauthorizedException('Wrong credentials');
         }

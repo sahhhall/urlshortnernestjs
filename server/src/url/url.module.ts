@@ -4,6 +4,7 @@ import { UrlController } from './url.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Url, urlSchema } from './schemas/url.schema';
 import { RedisCacheModule } from 'src/config/app-options.constants';
+import { UrlRepository } from './repositories/url.repository';
 
 @Module({
   imports: [
@@ -16,6 +17,12 @@ import { RedisCacheModule } from 'src/config/app-options.constants';
     RedisCacheModule
   ],
   controllers: [UrlController],
-  providers: [UrlService],
+  providers: [
+    UrlService,
+    {
+      provide: 'IUrlRepository',
+      useClass: UrlRepository,
+    }
+  ],
 })
 export class UrlModule { }

@@ -77,12 +77,14 @@ const SignupForm = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      const response = (await api.post("/auth/signup", {
+      const response = await api.post("/auth/signup", {
         name: values.name,
         email: values.email,
         password: values.password,
-      })) as any;
-      dispatch(setAuthCredentials(response.user));
+      });
+      const userData = response.data;
+      console.log(userData,"userData");
+      dispatch(setAuthCredentials(userData.user));
       navigate("/");
       toast({
         title: "Signup Successful",

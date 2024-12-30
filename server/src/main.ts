@@ -10,7 +10,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true //it throw a new error
   }))
   app.enableCors({
-    origin: 'http://localhost:5173', 
+    origin: process.env.FRONTEND , 
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
