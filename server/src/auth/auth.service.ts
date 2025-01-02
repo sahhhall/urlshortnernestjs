@@ -101,8 +101,6 @@ export class AuthService {
             maxAge: 15 * 60 * 1000,
             sameSite: 'strict',    
             secure: true,
-            path: '/',              
-            partitioned: true, //for brwoser warning
         });
     }
 
