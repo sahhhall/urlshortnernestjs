@@ -39,7 +39,7 @@ export class AuthService {
         });
 
         this.setCookie(res, token);
-        console.log("user is this",user,)
+        console.log("user is this", user,)
 
         return {
             message: "register successfull",
@@ -98,7 +98,8 @@ export class AuthService {
     private setCookie(res: Response, token: string) {
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true, 
+            sameSite: 'none', 
             maxAge: 24 * 60 * 60 * 1000
         });
     }
