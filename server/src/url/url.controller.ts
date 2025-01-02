@@ -19,7 +19,7 @@ export class UrlController {
 
   //url
   @Post('create')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async createShortUrl(
     @Body() createUrlDto: CreateUrlDTO,
     @CurrentUser() user: any
