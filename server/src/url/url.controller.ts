@@ -10,7 +10,7 @@ import { Response } from 'express';
 @Controller()
 export class UrlController {
   constructor(private readonly urlService: UrlService) { }
-  
+
   @Get(':shortId')
   async getShortUrl(@Param('shortId') shortId: string, @Res() res: Response) {
     const originalUrl = await this.urlService.get(shortId);
@@ -19,12 +19,12 @@ export class UrlController {
 
   //url
   @Post('create')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async createShortUrl(
     @Body() createUrlDto: CreateUrlDTO,
-    // @CurrentUser() user: any
+    @CurrentUser() user: any
   ) {
-    return this.urlService.create(createUrlDto, '507f1f77bcf86cd799439011');
+    return this.urlService.create(createUrlDto, user._id);
   }
 
 
