@@ -25,7 +25,7 @@ export class UrlService {
             userId,
         });
 
-        const domain = process.env.DOMAIN || 'http://localhost:3000';
+        const domain = process.env.DOMAIN;
 
         return {
             shortUrl: `${domain}/${shortId}`,

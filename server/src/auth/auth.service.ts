@@ -97,10 +97,11 @@ export class AuthService {
 
     private setCookie(res: Response, token: string) {
         res.cookie('access_token', token, {
-            httpOnly: true,
-            secure: true, 
+            httpOnly: true, 
+            maxAge: 15 * 60 * 1000, // 15 minutes
             sameSite: 'none', 
-            maxAge: 24 * 60 * 60 * 1000
+            secure: true,     
+            path: '/' 
         });
     }
 
