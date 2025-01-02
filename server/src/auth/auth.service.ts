@@ -99,10 +99,9 @@ export class AuthService {
         res.cookie('access_token', token, {
             httpOnly: true,
             maxAge: 15 * 60 * 1000,
-            sameSite: 'strict',    
-            secure: true,
-            path: '/',              
-            partitioned: true, //for brwoser warning
+            sameSite: 'none',   
+            secure: true,        
+            path: '/',
         });
     }
 
