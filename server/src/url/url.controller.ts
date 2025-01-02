@@ -22,9 +22,9 @@ export class UrlController {
   // @UseGuards(JwtAuthGuard)
   async createShortUrl(
     @Body() createUrlDto: CreateUrlDTO,
-    @CurrentUser() user: any
+    // @CurrentUser() user: any
   ) {
-    return this.urlService.create(createUrlDto, user._id);
+    return this.urlService.create(createUrlDto, '507f1f77bcf86cd799439011');
   }
 
 
