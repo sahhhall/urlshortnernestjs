@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,//it does not carry any extra proprty to controller 
     forbidNonWhitelisted: true //it throw a new error
@@ -14,11 +15,7 @@ async function bootstrap() {
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    exposedHeaders: ['Set-Cookie'] 
   });
-
-  app.use(cookieParser());
-
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
